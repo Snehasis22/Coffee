@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hop Cold Coffee - Sip the Smooth. Taste the Luxury.</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Modern Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --hazelnut-gold: #D4A574;
+            --classic-gold: #C9A86A;
+            --pure-white: #FFFFFF;
+            --deep-black: #050505;
+            --transition-smooth: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--deep-black);
+            color: var(--pure-white);
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* 1. Cinematic Background Videos (High Resolution Fix) */
+        .video-environment {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-stage {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .video-stage.active {
+            opacity: 1;
+        }
+
+        .video-stage video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Back to full-screen immersion */
+            will-change: transform;
+        }
+
+        /* Vengeance Vignette Overlay */
+        .video-stage::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.9) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Cinematic Grain Overlay */
+        .video-environment::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Interactive Particle Layer */
+        #particle-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Moisture / Water Droplet Overlays Removed */
+
+        .navbar {
+            position: fixed;
+            top: 20px;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .brand-logo {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 900;
+            letter-spacing: 1.5rem;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, var(--classic-gold), #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
+            transition: var(--transition-smooth);
+        }
+
+        .mini-logo-container {
+            position: fixed;
+            top: 20px;
+            left: 25px;
+            z-index: 2100;
+            pointer-events: auto;
+        }
+
+        .mini-logo {
+            height: 85px;
+            width: 85px;
+            border-radius: 50%;
+            background-color: #000;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+            transition: var(--transition-smooth);
+        }
+
+        .mini-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .hero-logo {
+            width: 180px;
+            height: auto;
+            margin: 0 auto 2.5rem;
+            display: block;
+            filter: drop-shadow(0 0 25px rgba(212, 165, 116, 0.4));
+            animation: pulse-logo 4s infinite ease-in-out;
+        }
+
+        /* 3. Sections */
+        .page-section {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            scroll-snap-align: start;
+        }
+
+        .content-wrap {
+            text-align: center;
+            width: 90%;
+            max-width: 1400px;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: var(--transition-smooth);
+            padding: 2rem;
+        }
+
+        .content-wrap.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            /* Responsive typography */
+            line-height: 0.9;
+            margin-bottom: 2rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .sub-heading {
+            font-size: clamp(0.8rem, 3vw, 1.4rem);
+            letter-spacing: clamp(0.2rem, 2vw, 0.8rem);
+            text-transform: uppercase;
+            font-weight: 300;
+            color: var(--classic-gold);
+            margin-bottom: 4rem;
+        }
+
+        .product-tag {
+            display: inline-block;
+            padding: 0.8rem 2.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            background: var(--classic-gold);
+            color: var(--deep-black);
+            margin-bottom: 2rem;
+        }
+
+        .desc-text {
+            font-size: 1.2rem;
+            line-height: 2;
+            max-width: 900px;
+            margin: 0 auto 4rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .grid-item h4 {
+            color: var(--classic-gold);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .grid-item p {
+            font-size: 1rem;
+            opacity: 0.6;
+            font-weight: 300;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 1.2rem 3.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.4rem;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            transition: var(--transition-smooth);
+        }
+
+        /* Sectional Theme Overrides */
+        #hazelnut-sec {
+            color: #1a1510;
+        }
+
+        /* Dark Text for Hazelnut */
+        #hazelnut-sec h1 {
+            color: #1a1510;
+        }
+
+        #hazelnut-sec .desc-text {
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        #hazelnut-sec .grid-item p {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        #hazelnut-sec .cta-btn {
+            border-color: rgba(0, 0, 0, 0.2);
+            color: #1a1510;
+        }
+
+        #hazelnut-sec .sub-heading,
+        #hazelnut-sec .grid-item h4 {
+            color: #8d6e3f;
+        }
+
+        #hazelnut-sec .product-tag {
+            background: #1a1510;
+            color: #D4A574;
+        }
+
+        #classic-sec {
+            color: var(--pure-white);
+        }
+
+        /* Light Text for Classic */
+
+        /* Navbar dynamic color */
+        .navbar.dark-theme .brand-logo {
+            background: linear-gradient(to right, #000, #444, #000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-btn:hover {
+            border-color: var(--classic-gold);
+            background: rgba(201, 168, 106, 0.1);
+            color: var(--classic-gold);
+            transform: scale(1.05);
+        }
+
+        #hazelnut-sec .cta-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: #1a1510;
+            color: #000;
+        }
+
+        #vid-env-hazelnut video {
+            filter: brightness(0.85);
+            /* Reduced brightness for Hazelnut specifically */
+        }
+
+        /* SCROLL INDICATOR */
+        .scroll-hint {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .scroll-hint span {
+            font-size: 0.7rem;
+            letter-spacing: 0.4rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .hint-bar {
+            width: 1px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hint-bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: var(--classic-gold);
+            animation: scroll-anim 2s infinite cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes scroll-anim {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(200%);
+            }
+        }
+
+        /* Mobile Specific Overrides */
+        @media (max-width: 768px) {
+            /* Mobile Navbar Padding Removed */
+
+            .page-section {
+                height: auto;
+                min-height: 100vh;
+                padding: 120px 0;
+            }
+
+            .desc-text {
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+
+            .cta-btn {
+                width: 100%;
+                padding: 1rem 2rem;
+            }
+        }
+
+        /* 4. Preloader Fixing */
+        .loader-portal {
+            position: fixed;
+            inset: 0;
+            background: var(--deep-black);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        @keyframes pulse-logo {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.5;
+            }
+        }
+
+        /* Buying Links (New) */
+        .buy-links-wrapper {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .buy-links-title {
+            white-space: nowrap;
+            font-size: 0.75rem;
+            letter-spacing: 0.25rem;
+            text-transform: uppercase;
+            color: var(--classic-gold);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px 18px;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            align-self: flex-start;
+        }
+
+        .buy-links-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        .buy-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: block;
+            position: relative;
+            transition: var(--transition-smooth);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-8px) scale(1.1);
+        }
+
+        /* Platform Specific Glows */
+        .buy-btn[data-plateform="amazon"]:hover {
+            box-shadow: 0 0 20px rgba(255, 153, 0, 0.7);
+            border-color: #FF9900;
+        }
+
+        .buy-btn[data-plateform="flipkart"]:hover {
+            box-shadow: 0 0 20px rgba(40, 116, 240, 0.7);
+            border-color: #2874F0;
+        }
+
+        .buy-btn[data-plateform="bigbasket"]:hover {
+            box-shadow: 0 0 20px rgba(132, 194, 37, 0.7);
+            border-color: #84C225;
+        }
+
+        .buy-btn[data-plateform="flipkart"] {
+            background-image: url("flipkart.jpg");
+        }
+
+        .buy-btn[data-plateform="bigbasket"] {
+            background-image: url("Bigbasket.jpg");
+        }
+
+        .buy-btn[data-plateform="amazon"] {
+            background-image: url("amazon.jpg");
+        }
+
+        /* Variant Controls (Repositioned to Top-Right) */
+        .variant-controls {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 2000;
+        }
+
+        .variant-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .variant-btn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            transition: var(--transition-smooth);
+            border-radius: 50%;
+        }
+
+        .variant-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--classic-gold);
+        }
+
+        .variant-btn.active {
+            border-color: var(--classic-gold);
+            transform: translateX(-10px) scale(1.15);
+            /* Slightly slide out left */
+            box-shadow: 0 0 25px rgba(212, 165, 116, 0.5);
+        }
+
+        .variant-btn.active::before {
+            background: transparent;
+        }
+
+        .variant-btn[data-variant="hazelnut"] {
+            background-image: url("1.0.jpg");
+        }
+
+        .variant-btn[data-variant="classic"] {
+            background-image: url("3.0.jpg");
+        }
+
+        .variant-label {
+            position: absolute;
+            right: 85px;
+            /* Side label */
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            font-size: 0.75rem;
+            letter-spacing: 0.25rem;
+            text-transform: uppercase;
+            color: var(--classic-gold);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px 18px;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+        }
+
+        .variant-btn:hover .variant-label {
+            opacity: 1;
+            right: 95px;
+        }
+
+        /* Tooltip for Buy Buttons */
+        .buy-btn::after {
+            content: attr(data-title);
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: var(--transition-smooth);
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .buy-btn:hover::after {
+            opacity: 1;
+            bottom: 65px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Left Mini Logo -->
+    <div class="mini-logo-container">
+        <img src="Logo.jpg" alt="Hop Logo" class="mini-logo">
+    </div>
+
+    <!-- Fixed Loading Portal -->
+    <div class="loader-portal" id="loader">
+        <div style="font-family: 'Cinzel', serif; font-size: 4rem; font-weight: 900; color: var(--classic-gold);">HOP
+        </div>
+    </div>
+
+    <!-- Interactive Layer -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Video Environment Stage -->
+    <div class="video-environment" id="video-env">
+        <div class="video-stage active" id="vid-env-hero">
+            <img src="1st BG.jpg" alt="Hero Background"
+                style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+        </div>
+        <div class="video-stage" id="vid-env-hazelnut">
+            <video autoplay loop muted playsinline class="back-video">
+                <source src="Hazil nut.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="video-stage" id="vid-env-classic">
+            <video autoplay loop muted playsinline class="back-video">
+                <source src="Classic coffee.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <!-- Variant Selector (New) -->
+    <div class="variant-controls">
+        <div class="variant-btn" data-variant="hazelnut" onclick="scrollToSection('hazelnut-sec')">
+            <span class="variant-label">Hazelnut Latte</span>
+        </div>
+        <div class="variant-btn" data-variant="classic" onclick="scrollToSection('classic-sec')">
+            <span class="variant-label">Classic Brew</span>
+        </div>
+    </div>
+
+    <!-- Logos Removed -->
+    <nav class="navbar">
+        <div class="brand-logo">HOP</div>
+    </nav>
+
+    <!-- Buying Links (New - Bottom Left) -->
+    <div class="buy-links-wrapper">
+        <div class="buy-links-title">Grab your choice from your nearest store</div>
+        <div class="buy-links-container">
+            <a href="https://www.amazon.in/Cold-Brew-Coffee-Ready-Drink/dp/B0CJBZ9B34?th=1" target="_blank"
+                class="buy-btn" data-plateform="amazon" data-title="Shop on Amazon"></a>
+            <a href="https://www.flipkart.com/hop-cold-brew-coffee-beverage-200-ml-classic-coffee-pack-12/p/itm438acf3d86fb3"
+                target="_blank" class="buy-btn" data-plateform="flipkart" data-title="Shop on Flipkart"></a>
+            <a href="https://www.bigbasket.com/pd/40339898/hop-classic-cold-coffee-200-ml/" target="_blank"
+                class="buy-btn" data-plateform="bigbasket" data-title="Shop on BigBasket"></a>
+        </div>
+    </div>
+
+    <main id="main-content">
+        <!-- Hero Stage -->
+        <section class="page-section" id="hero-sec">
+            <div class="content-wrap reveal">
+                <p class="sub-heading">Sip the Smooth. Taste the Luxury.</p>
+                <h1>SIP THE LUXURY</h1>
+                <p class="desc-text">Indulge in the perfect harmony of rich coffee and roasted hazelnuts with Hop Cold
+                    Coffee – Hazelnut Latte. Crafted for those who crave smoothness with a nutty twist.</p>
+                <a href="#hazelnut-sec" class="cta-btn">BEGIN JOURNEY</a>
+            </div>
+            <div class="scroll-hint">
+                <span>Scroll</span>
+                <div class="hint-bar"></div>
+            </div>
+        </section>
+
+        <!-- Hazelnut Stage -->
+        <section class="page-section" id="hazelnut-sec">
+            <div class="content-wrap">
+                <span class="product-tag">Premium • Aesthetic • Youthful</span>
+                <h1>HAZELNUT<br>LATTE</h1>
+                <p class="desc-text">Experience café-style luxury in a bottle. Our Hazelnut Latte blends high-quality
+                    coffee with the warm, nutty essence of roasted hazelnuts, finished with a silky smooth texture that
+                    melts effortlessly on your palate.</p>
+
+                <div class="feature-grid">
+                    <div class="grid-item">
+                        <h4>Top Note</h4>
+                        <p>Roasted Coffee Aroma</p>
+                    </div>
+                    <div class="grid-item">
+                        <h4>Middle Note</h4>
+                        <p>Creamy Milk Blend</p>
+                    </div>
+                    <div class="grid-item">
+                        <h4>Base Note</h4>
+                        <p>Warm Hazelnut Richness</p>
+                    </div>
+                    <div class="grid-item">
+                        <h4>Finish</h4>
+                        <p>Silky Smooth Texture</p>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-bottom: 3rem; opacity: 0.6; font-size: 0.8rem; letter-spacing: 0.2rem; text-transform: uppercase;">
+                    Infused with Natural Hazelnut Flavor • Best Served Chilled
+                </div>
+
+                <a href="#classic-sec" class="cta-btn">ORDER THE INDULGENCE — $6.50</a>
+            </div>
+        </section>
+
+        <!-- Classic Stage -->
+        <section class="page-section" id="classic-sec">
+            <div class="content-wrap">
+                <span class="product-tag">Bold • Dark aesthetic • Masculine</span>
+                <h1>CLASSIC<br>BREW</h1>
+                <p class="desc-text">Step into the world of deep, bold flavor with Hop Cold Coffee – Classic Brew.
+                    Crafted with precision and passion, it delivers the authentic essence of freshly roasted beans in a
+                    sleek, ready-to-drink form.</p>
+
+                <div class="feature-grid">
+                    <div class="grid-item">
+                        <h4>Top Note</h4>
+                        <p>Deep Roasted Aroma</p>
+                    </div>
+                    <div class="grid-item">
+                        <h4>Middle Note</h4>
+                        <p>Rich Coffee Body</p>
+                    </div>
+                    <div class="grid-item">
+                        <h4>Base Note</h4>
+                        <p>Smooth, Chocolatey Finish</p>
+                    </div>
+                    <div class="grid-item">
+                        <h4>Energy</h4>
+                        <p>Perfect Daily Boost</p>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-bottom: 3rem; opacity: 0.6; font-size: 0.8rem; letter-spacing: 0.2rem; text-transform: uppercase;">
+                    Bold Taste • Pure Energy • Strong & Bold
+                </div>
+
+                <a href="#hero-sec" class="cta-btn">ORDER THE INTENSITY — $5.75</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // ROBUST PRELOADER: Ensures the page reveals even if videos or assets are slow
+        const hideLoader = () => {
+            const loader = document.getElementById('loader');
+            if (loader && loader.style.display !== 'none') {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 1000);
+            }
+        };
+
+        // Trigger on full load
+        window.addEventListener('load', hideLoader);
+
+        // Safety fallback: Hide loader after 3 seconds anyway to prevent getting stuck
+        setTimeout(hideLoader, 3000);
+
+        // Intersection Observer for Scroll Animations and Dynamic Video Swapping
+        const sections = document.querySelectorAll('.page-section');
+        const stages = document.querySelectorAll('.video-stage');
+        const env = document.getElementById('video-env');
+
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const wrap = entry.target.querySelector('.content-wrap');
+                const sectionId = entry.target.id;
+                const variantBtns = document.querySelectorAll('.variant-btn');
+
+                if (entry.isIntersecting) {
+                    wrap.classList.add('reveal');
+                    stages.forEach(s => s.classList.remove('active'));
+                    variantBtns.forEach(b => b.classList.remove('active'));
+
+                    const nav = document.querySelector('.navbar');
+                    if (sectionId === 'hazelnut-sec') {
+                        document.getElementById('vid-env-hazelnut').classList.add('active');
+                        document.querySelector('.variant-btn[data-variant="hazelnut"]').classList.add('active');
+                        if (nav) nav.classList.add('dark-theme');
+                    } else if (sectionId === 'classic-sec') {
+                        document.getElementById('vid-env-classic').classList.add('active');
+                        document.querySelector('.variant-btn[data-variant="classic"]').classList.add('active');
+                        if (nav) nav.classList.remove('dark-theme');
+                    } else {
+                        document.getElementById('vid-env-hero').classList.add('active');
+                        if (nav) nav.classList.remove('dark-theme');
+                    }
+                } else {
+                    wrap.classList.remove('reveal');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(sec => observer.observe(sec));
+
+        // NEW: Variant Selection Scroll Helper
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // INTERACTIVE: Mouse Parallax System
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            targetX = (e.clientX - window.innerWidth / 2) / 100;
+            targetY = (e.clientY - window.innerHeight / 2) / 100;
+        });
+
+        const updateVisuals = () => {
+            mouseX += (targetX - mouseX) * 0.05;
+            mouseY += (targetY - mouseY) * 0.05;
+            if (env) {
+                env.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+            }
+            requestAnimationFrame(updateVisuals);
+        };
+        updateVisuals();
+
+        // Particle System (Glimmer Dust)
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        const initCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.alpha = Math.random() * 0.4;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(201, 168, 106, ${this.alpha})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+        const animateParticles = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        };
+        animateParticles();
+
+        // Smooth Scrolling Logic
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
